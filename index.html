@@ -702,35 +702,25 @@
                 loadDashboard();
             }
         }
-        
         // Step navigation
         function nextStep(step) {
-            // Validate current step before moving forward
             const currentStep = step - 1;
             const stepEl = document.getElementById('step' + currentStep);
-            const requiredInputs = stepEl.querySelectorAll('[required]');
-            let valid = true;
             
-            // Special validation for step 2 (date & time)
+            // Step 2 validation - date & time
             if (currentStep === 2) {
                 const dateVal = document.getElementById('bookingDate').value;
                 const timeVal = document.getElementById('selectedTime').value;
                 
-                if (!dateVal) {
-                    document.getElementById('bookingDate').style.border = '2px solid #FF5252';
-                    valid = false;
-                } else {
-                    document.getElementById('bookingDate').style.border = '';
+                if (!dateVal || !timeVal) {
+                    alert('Please pick a date and time!');
+                    return;
                 }
-                
-                if (!timeVal) {
-                    alert('Please pick a time slot!');
-                    valid = false;
-                }
-                
-                if (!valid) return;
             } else {
-                // Standard validation for other steps
+                // Standard validation - check all required fields in current step
+                const requiredInputs = stepEl.querySelectorAll('[required]');
+                let valid = true;
+                
                 requiredInputs.forEach(input => {
                     if (!input.value) {
                         valid = false;
