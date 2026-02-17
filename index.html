@@ -407,6 +407,19 @@
             margin-bottom: 4px;
         }
         
+        .booking-dog-photo {
+            margin: 8px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            max-width: 120px;
+        }
+        
+        .booking-dog-photo img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
         .booking-actions {
             display: flex;
             gap: 8px;
@@ -448,6 +461,19 @@
         /* Hidden */
         .hidden {
             display: none !important;
+        }
+        
+        .photo-preview {
+            margin-top: 12px;
+            border-radius: 12px;
+            overflow: hidden;
+            max-width: 200px;
+        }
+        
+        .photo-preview img {
+            width: 100%;
+            height: auto;
+            display: block;
         }
     </style>
 </head>
@@ -504,27 +530,18 @@
                     </div>
                     <div class="form-group">
                         <label>Preferred Time</label>
-                        <div class="time-grid" id="timeSlots">
-                            <div class="time-slot" onclick="selectTime(this, '7:00 AM')">7:00 AM</div>
-                            <div class="time-slot" onclick="selectTime(this, '8:00 AM')">8:00 AM</div>
-                            <div class="time-slot" onclick="selectTime(this, '9:00 AM')">9:00 AM</div>
-                            <div class="time-slot" onclick="selectTime(this, '10:00 AM')">10:00 AM</div>
-                            <div class="time-slot" onclick="selectTime(this, '11:00 AM')">11:00 AM</div>
-                            <div class="time-slot" onclick="selectTime(this, '12:00 PM')">12:00 PM</div>
-                            <div class="time-slot" onclick="selectTime(this, '1:00 PM')">1:00 PM</div>
-                            <div class="time-slot" onclick="selectTime(this, '2:00 PM')">2:00 PM</div>
-                            <div class="time-slot" onclick="selectTime(this, '3:00 PM')">3:00 PM</div>
-                            <div class="time-slot" onclick="selectTime(this, '4:00 PM')">4:00 PM</div>
-                            <div class="time-slot" onclick="selectTime(this, '5:00 PM')">5:00 PM</div>
-                            <div class="time-slot" onclick="selectTime(this, '6:00 PM')">6:00 PM</div>
-                            <div class="time-slot" onclick="selectTime(this, '7:00 PM')">7:00 PM</div>
-                        </div>
+                        <div class="time-grid" id="timeSlots"></div>
                         <input type="hidden" id="selectedTime" required>
                     </div>
                 </div>
                 
                 <div class="card">
                     <div class="card-title">🐶 Your Dog(s)</div>
+                    <div class="form-group">
+                        <label>Dog Photo</label>
+                        <input type="file" id="dogPhoto" accept="image/*" capture="environment" onchange="previewDogPhoto(event)">
+                        <div id="dogPhotoPreview" class="photo-preview hidden"></div>
+                    </div>
                     <div class="form-group">
                         <label>Dog's Name *</label>
                         <input type="text" id="dogName" required placeholder="e.g., Max">
@@ -602,7 +619,7 @@
                 <div class="success-card">
                     <div class="success-icon">🎉</div>
                     <div class="success-title">Booking Requested!</div>
-                    <p class="success-text">Your walker George will review your request and confirm within 24 hours. Check your email for confirmation.</p>
+                    <p class="success-text">George will review your request and text you to confirm or discuss any adjustments (like timing changes). He can't wait to meet your pup! 🐕</p>
                     <button class="submit-btn" onclick="resetForm()">Book Another Walk</button>
                 </div>
             </div>
@@ -673,6 +690,107 @@
             el.querySelector('input').checked = true;
         }
         
+        // Dog photo preview
+        function previewDogPhoto(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('dogPhotoPreview');
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.innerHTML = '<img src="' + e.target.result + '" alt="Dog photo">';
+                    preview.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.classList.add('hidden');
+                preview.innerHTML = '';
+            }
+        }
+        
+        // Get service duration in minutes
+        function getServiceDuration(serviceValue) {
+            const durations = { '30min': 30, '60min': 60, 'boarding': 0 };
+            return durations[serviceValue] || 60;
+        }
+        
+        // Convert time string to minutes since midnight
+        function timeToMinutes(timeStr) {
+            const match = timeStr.match(/(\d+):(\d+)\s*(AM|PM)/i);
+            if (!match) return 0;
+            
+            let hours = parseInt(match[1]);
+            const minutes = parseInt(match[2]);
+            const period = match[3].toUpperCase();
+            
+            if (period === 'PM' && hours !== 12) hours += 12;
+            if (period === 'AM' && hours === 12) hours = 0;
+            
+            return hours * 60 + minutes;
+        }
+        
+        // Convert minutes to time string
+        function minutesToTime(minutes) {
+            const hours = Math.floor(minutes / 60);
+            const mins = minutes % 60;
+            const period = hours >= 12 ? 'PM' : 'AM';
+            const displayHours = hours === 0 ? 12 : (hours > 12 ? hours - 12 : hours);
+            return displayHours + ':' + mins.toString().padStart(2, '0') + ' ' + period;
+        }
+        
+        // Get booked times for a date
+        function getBookedTimes(date) {
+            const bookings = getBookings();
+            return bookings
+                .filter(b => b.date === date && b.status !== 'cancelled')
+                .map(b => ({
+                    time: b.time,
+                    duration: getServiceDuration(b.service)
+                }));
+        }
+        
+        // Generate time slots based on bookings and buffer
+        function generateTimeSlots() {
+            const date = document.getElementById('bookingDate').value;
+            const container = document.getElementById('timeSlots');
+            const bookedTimes = date ? getBookedTimes(date) : [];
+            
+            // All possible time slots (7am to 7pm, every 30 min)
+            const allSlots = [];
+            for (let mins = 7 * 60; mins <= 19 * 60; mins += 30) {
+                allSlots.push(mins);
+            }
+            
+            // Block times: booked slots + 30 min buffer after each
+            const blockedTimes = new Set();
+            bookedTimes.forEach(booking => {
+                const startMins = timeToMinutes(booking.time);
+                const endMins = startMins + (booking.duration || 30);
+                // Block the booked slot and 30 min buffer after
+                for (let m = startMins; m < endMins + 30; m += 30) {
+                    blockedTimes.add(m);
+                }
+            });
+            
+            // Generate HTML
+            container.innerHTML = allSlots.map(mins => {
+                const timeStr = minutesToTime(mins);
+                const isBlocked = blockedTimes.has(mins);
+                const unavailableClass = isBlocked ? 'unavailable' : '';
+                const onclick = isBlocked ? '' : `onclick="selectTime(this, '${timeStr}')"`;
+                return `<div class="time-slot ${unavailableClass}" ${onclick}>${timeStr}</div>`;
+            }).join('');
+            
+            // Reset selection
+            selectedTime = null;
+            document.getElementById('selectedTime').value = '';
+        }
+        
+        // Initialize - set min date and generate time slots
+        document.getElementById('bookingDate').min = new Date().toISOString().split('T')[0];
+        document.getElementById('bookingDate').addEventListener('change', generateTimeSlots);
+        generateTimeSlots();
+        
         // Time selection
         let selectedTime = null;
         function selectTime(el, time) {
@@ -716,7 +834,8 @@
                     name: document.getElementById('dogName').value,
                     breed: document.getElementById('dogBreed').value,
                     size: document.getElementById('dogSize').value,
-                    notes: document.getElementById('dogNotes').value
+                    notes: document.getElementById('dogNotes').value,
+                    photo: document.getElementById('dogPhotoPreview').innerHTML
                 },
                 owner: {
                     name: document.getElementById('ownerName').value,
@@ -780,6 +899,7 @@
                     <div class="booking-details">
                         <div>📅 ${booking.date} at ${booking.time}</div>
                         <div>🐕 ${booking.dog.name} ${booking.dog.breed ? `(${booking.dog.breed})` : ''}</div>
+                        ${booking.dog.photo ? `<div class="booking-dog-photo">${booking.dog.photo}</div>` : ''}
                         <div>👤 ${booking.owner.name} - ${booking.owner.phone}</div>
                         <div>📍 ${booking.owner.address}</div>
                         ${booking.dog.notes ? `<div>📝 Notes: ${booking.dog.notes}</div>` : ''}
