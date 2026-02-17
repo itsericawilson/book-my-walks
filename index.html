@@ -536,7 +536,28 @@
                 </div>
                 
                 <div class="card">
-                    <div class="card-title">🐶 Your Dog(s)</div>
+                    <div class="card-title">🐶 You & Your Dog</div>
+                    <div class="form-group">
+                        <label>Your Name *</label>
+                        <input type="text" id="ownerName" required placeholder="Your name">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone *</label>
+                        <input type="tel" id="ownerPhone" required placeholder="(415) 123-4567">
+                    </div>
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" id="ownerEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Address for Pickup *</label>
+                        <textarea id="pickupAddress" required placeholder="Full address for dog pickup"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Emergency Contact</label>
+                        <input type="text" id="emergencyContact" placeholder="Name & phone">
+                    </div>
+                    <hr style="border: none; border-top: 1px solid var(--border); margin: 20px 0;">
                     <div class="form-group">
                         <label>Dog Photo</label>
                         <input type="file" id="dogPhoto" accept="image/*" capture="environment" onchange="previewDogPhoto(event)">
@@ -562,30 +583,6 @@
                     <div class="form-group">
                         <label>Special Notes (behavior, medical, etc.)</label>
                         <textarea id="dogNotes" placeholder="Any behavioral issues, medical conditions, or special needs?"></textarea>
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-title">👤 Your Info</div>
-                    <div class="form-group">
-                        <label>Your Name *</label>
-                        <input type="text" id="ownerName" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Phone *</label>
-                        <input type="tel" id="ownerPhone" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Email *</label>
-                        <input type="email" id="ownerEmail" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Address for Pickup *</label>
-                        <textarea id="pickupAddress" required placeholder="Full address for dog pickup"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Emergency Contact</label>
-                        <input type="text" id="emergencyContact" placeholder="Name & phone">
                     </div>
                 </div>
                 
@@ -688,6 +685,7 @@
             document.querySelectorAll('.service-option').forEach(opt => opt.classList.remove('selected'));
             el.classList.add('selected');
             el.querySelector('input').checked = true;
+            generateTimeSlots(); // Regenerate slots based on new service duration
         }
         
         // Dog photo preview
@@ -755,11 +753,13 @@
             const container = document.getElementById('timeSlots');
             const bookedTimes = date ? getBookedTimes(date) : [];
             
-            // All possible time slots (7am to 7pm, every 30 min)
-            const allSlots = [];
-            for (let mins = 7 * 60; mins <= 19 * 60; mins += 30) {
-                allSlots.push(mins);
-            }
+            // Find which hour slots are booked (for determining if :30 shows)
+            const bookedHourSlots = new Set();
+            bookedTimes.forEach(booking => {
+                const startMins = timeToMinutes(booking.time);
+                const hourSlot = Math.floor(startMins / 60) * 60; // Round down to hour
+                bookedHourSlots.add(hourSlot);
+            });
             
             // Block times: booked slots + 30 min buffer after each
             const blockedTimes = new Set();
@@ -772,10 +772,22 @@
                 }
             });
             
+            // Generate slots: start with :00, add :30 only if hour is booked
+            const slots = [];
+            for (let mins = 7 * 60; mins <= 19 * 60; mins += 60) {
+                // Always add the hour slot
+                slots.push({ mins, type: 'hour' });
+                
+                // Add :30 only if the hour slot before it is booked
+                if (bookedHourSlots.has(mins)) {
+                    slots.push({ mins: mins + 30, type: 'half' });
+                }
+            }
+            
             // Generate HTML
-            container.innerHTML = allSlots.map(mins => {
-                const timeStr = minutesToTime(mins);
-                const isBlocked = blockedTimes.has(mins);
+            container.innerHTML = slots.map(slot => {
+                const timeStr = minutesToTime(slot.mins);
+                const isBlocked = blockedTimes.has(slot.mins);
                 const unavailableClass = isBlocked ? 'unavailable' : '';
                 const onclick = isBlocked ? '' : `onclick="selectTime(this, '${timeStr}')"`;
                 return `<div class="time-slot ${unavailableClass}" ${onclick}>${timeStr}</div>`;
