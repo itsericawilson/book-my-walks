@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BMW Dog Walking - Book a Walk</title>
+    <title>Book My Walks - Your Reliable Dog Walker in San Francisco</title>
     <meta name="theme-color" content="#FF6B35">
     <meta name="apple-mobile-web-app-capable" content="yes">
     
@@ -454,8 +454,8 @@
 <body>
     <div class="container">
         <header>
-            <div class="logo">BMW <span>Dog Walking</span></div>
-            <p class="tagline">Reliable dog walking & boarding</p>
+            <div class="logo">Book My Walks</div>
+            <p class="tagline">Your reliable Dog Walker in San Francisco</p>
         </header>
         
         <div class="tab-switcher">
@@ -474,7 +474,7 @@
                             <span class="service-radio"></span>
                             <div class="service-info">
                                 <div class="service-name">30-Minute Walk</div>
-                                <div class="service-price">$25</div>
+                                <div class="service-price">$20</div>
                             </div>
                         </label>
                         <label class="service-option" onclick="selectService(this)">
@@ -482,7 +482,7 @@
                             <span class="service-radio"></span>
                             <div class="service-info">
                                 <div class="service-name">1-Hour Walk</div>
-                                <div class="service-price">$40</div>
+                                <div class="service-price">$35</div>
                             </div>
                         </label>
                         <label class="service-option" onclick="selectService(this)">
@@ -490,7 +490,7 @@
                             <span class="service-radio"></span>
                             <div class="service-info">
                                 <div class="service-name">Boarding (per day)</div>
-                                <div class="service-price">$65</div>
+                                <div class="service-price">$75</div>
                             </div>
                         </label>
                     </div>
@@ -505,6 +505,7 @@
                     <div class="form-group">
                         <label>Preferred Time</label>
                         <div class="time-grid" id="timeSlots">
+                            <div class="time-slot" onclick="selectTime(this, '7:00 AM')">7:00 AM</div>
                             <div class="time-slot" onclick="selectTime(this, '8:00 AM')">8:00 AM</div>
                             <div class="time-slot" onclick="selectTime(this, '9:00 AM')">9:00 AM</div>
                             <div class="time-slot" onclick="selectTime(this, '10:00 AM')">10:00 AM</div>
@@ -578,13 +579,16 @@
                         <div class="payment-title">💰 Payment Options</div>
                         <div class="payment-options">
                             <div class="payment-option">
-                                <strong>Venmo:</strong> @brian-walker
+                                <strong>Venmo:</strong> @georgexmeta
                             </div>
                             <div class="payment-option">
-                                <strong>Zelle:</strong> brian@email.com
+                                <strong>Zelle:</strong> George Tinoco (415) 324-0599
                             </div>
                             <div class="payment-option">
-                                <strong>Cash:</strong> Pay in person
+                                <strong>Apple Pay:</strong> (415) 324-0599
+                            </div>
+                            <div class="payment-option">
+                                <strong>Cash:</strong> In Person
                             </div>
                         </div>
                     </div>
@@ -598,7 +602,7 @@
                 <div class="success-card">
                     <div class="success-icon">🎉</div>
                     <div class="success-title">Booking Requested!</div>
-                    <p class="success-text">Your walker Brian will review your request and confirm within 24 hours. Check your email for confirmation.</p>
+                    <p class="success-text">Your walker George will review your request and confirm within 24 hours. Check your email for confirmation.</p>
                     <button class="submit-btn" onclick="resetForm()">Book Another Walk</button>
                 </div>
             </div>
