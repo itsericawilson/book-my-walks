@@ -491,9 +491,10 @@
         
         <!-- Booking View -->
         <div id="bookView" class="view active">
-            <form id="bookingForm" onsubmit="submitBooking(event)">
+            <!-- Step 1: Service -->
+            <div id="step1" class="form-step">
                 <div class="card">
-                    <div class="card-title">🐕 Select Service</div>
+                    <div class="card-title">🐕 What does your pup need?</div>
                     <div class="service-options">
                         <label class="service-option selected" onclick="selectService(this)">
                             <input type="radio" name="service" value="30min" checked>
@@ -515,15 +516,19 @@
                             <input type="radio" name="service" value="boarding">
                             <span class="service-radio"></span>
                             <div class="service-info">
-                                <div class="service-name">Boarding (per day)</div>
+                                <div class="service-name">2-Hour Adventure</div>
                                 <div class="service-price">$75</div>
                             </div>
                         </label>
                     </div>
                 </div>
-                
+                <button type="button" class="submit-btn" onclick="nextStep(2)">Next: Pick a Time ➡️</button>
+            </div>
+            
+            <!-- Step 2: Date & Time -->
+            <div id="step2" class="form-step hidden">
                 <div class="card">
-                    <div class="card-title">📅 Pick a Date & Time</div>
+                    <div class="card-title">📅 When should George come by?</div>
                     <div class="form-group">
                         <label>Date</label>
                         <input type="date" id="bookingDate" required>
@@ -534,9 +539,16 @@
                         <input type="hidden" id="selectedTime" required>
                     </div>
                 </div>
-                
+                <div style="display: flex; gap: 10px;">
+                    <button type="button" class="submit-btn" style="flex: 1; background: #666;" onclick="nextStep(1)">⬅️ Back</button>
+                    <button type="button" class="submit-btn" style="flex: 1;" onclick="nextStep(3)">Next: You & Your Pup ➡️</button>
+                </div>
+            </div>
+            
+            <!-- Step 3: You & Your Dog -->
+            <div id="step3" class="form-step hidden">
                 <div class="card">
-                    <div class="card-title">🐶 You & Your Dog</div>
+                    <div class="card-title">🐶 Tell George about yourself & your pup</div>
                     <div class="form-group">
                         <label>Your Name *</label>
                         <input type="text" id="ownerName" required placeholder="Your name">
@@ -585,10 +597,17 @@
                         <textarea id="dogNotes" placeholder="Any behavioral issues, medical conditions, or special needs?"></textarea>
                     </div>
                 </div>
-                
+                <div style="display: flex; gap: 10px;">
+                    <button type="button" class="submit-btn" style="flex: 1; background: #666;" onclick="nextStep(2)">⬅️ Back</button>
+                    <button type="button" class="submit-btn" style="flex: 1;" onclick="nextStep(4)">Next: Payment ➡️</button>
+                </div>
+            </div>
+            
+            <!-- Step 4: Payment -->
+            <div id="step4" class="form-step hidden">
                 <div class="card">
-                    <div class="card-title">💳 Payment</div>
-                    <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 16px;">Pay directly to your walker when service is completed.</p>
+                    <div class="card-title">💳 How will you pay George?</div>
+                    <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 16px;">Pay directly to George when the walk is done. No upfront payment needed!</p>
                     <div class="payment-info">
                         <div class="payment-title">💰 Payment Options</div>
                         <div class="payment-options">
@@ -607,17 +626,21 @@
                         </div>
                     </div>
                 </div>
-                
-                <button type="submit" class="submit-btn">📨 Request Booking</button>
-            </form>
+                <div style="display: flex; gap: 10px;">
+                    <button type="button" class="submit-btn" style="flex: 1; background: #666;" onclick="nextStep(3)">⬅️ Back</button>
+                    <button type="button" class="submit-btn" style="flex: 1;" onclick="submitBooking()">📨 Request Booking</button>
+                </div>
+            </div>
             
             <!-- Success -->
-            <div id="successView" class="card hidden">
-                <div class="success-card">
-                    <div class="success-icon">🎉</div>
-                    <div class="success-title">Booking Requested!</div>
-                    <p class="success-text">George will review your request and text you to confirm or discuss any adjustments (like timing changes). He can't wait to meet your pup! 🐕</p>
-                    <button class="submit-btn" onclick="resetForm()">Book Another Walk</button>
+            <div id="successView" class="hidden">
+                <div class="card">
+                    <div style="text-align: center; padding: 40px 20px;">
+                        <div style="font-size: 4rem; margin-bottom: 16px;">🎉</div>
+                        <div class="success-title">You're all set!</div>
+                        <p class="success-text" style="margin-top: 16px;">George will text you at <span id="confirmPhone"></span> to confirm your booking or chat about any timing changes. Can't wait to meet your pup! 🐕</p>
+                        <button class="submit-btn" style="margin-top: 24px;" onclick="resetForm()">Book Another Walk</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -678,6 +701,34 @@
                 document.getElementById('dashboardView').classList.add('active');
                 loadDashboard();
             }
+        }
+        
+        // Step navigation
+        function nextStep(step) {
+            // Validate current step before moving forward
+            const currentStep = step - 1;
+            const stepEl = document.getElementById('step' + currentStep);
+            const requiredInputs = stepEl.querySelectorAll('[required]');
+            let valid = true;
+            
+            requiredInputs.forEach(input => {
+                if (!input.value) {
+                    valid = false;
+                    input.style.border = '2px solid #FF5252';
+                } else {
+                    input.style.border = '';
+                }
+            });
+            
+            if (!valid) {
+                alert('Please fill in all required fields!');
+                return;
+            }
+            
+            // Hide all steps
+            document.querySelectorAll('.form-step').forEach(el => el.classList.add('hidden'));
+            // Show target step
+            document.getElementById('step' + step).classList.remove('hidden');
         }
         
         // Service selection
@@ -835,9 +886,7 @@
         }
         
         // Submit booking
-        function submitBooking(e) {
-            e.preventDefault();
-            
+        function submitBooking() {
             const booking = {
                 service: document.querySelector('input[name="service"]:checked').value,
                 date: document.getElementById('bookingDate').value,
@@ -860,8 +909,9 @@
             
             saveBooking(booking);
             
-            // Show success
-            document.getElementById('bookingForm').classList.add('hidden');
+            // Show success - hide all steps, show success
+            document.querySelectorAll('.form-step').forEach(el => el.classList.add('hidden'));
+            document.getElementById('confirmPhone').textContent = document.getElementById('ownerPhone').value;
             document.getElementById('successView').classList.remove('hidden');
             
             // In production, this would send an email
@@ -870,11 +920,28 @@
         
         // Reset form
         function resetForm() {
-            document.getElementById('bookingForm').reset();
-            document.getElementById('bookingForm').classList.remove('hidden');
+            // Clear all form fields
+            document.querySelectorAll('#bookView input, #bookView textarea, #bookView select').forEach(el => {
+                el.value = '';
+            });
+            
+            // Clear photo preview
+            document.getElementById('dogPhotoPreview').innerHTML = '';
+            document.getElementById('dogPhotoPreview').classList.add('hidden');
+            
+            // Reset step visibility
             document.getElementById('successView').classList.add('hidden');
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById('step' + i).classList.add('hidden');
+            }
+            document.getElementById('step1').classList.remove('hidden');
+            
+            // Clear time selection
             document.querySelectorAll('.time-slot').forEach(slot => slot.classList.remove('selected'));
             selectedTime = null;
+            
+            // Regenerate time slots
+            generateTimeSlots();
         }
         
         // Load dashboard
