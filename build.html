@@ -137,11 +137,11 @@
         /* Services */
         .service-row {
             display: grid;
-            grid-template-columns: 1fr 80px 80px 40px;
-            gap: 10px;
-            align-items: end;
-            margin-bottom: 12px;
-            padding-bottom: 12px;
+            grid-template-columns: 2fr 1fr 1fr auto;
+            gap: 12px;
+            align-items: start;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
             border-bottom: 1px solid var(--border);
         }
         
@@ -152,14 +152,32 @@
         }
         
         .service-row label {
-            font-size: 0.8rem;
-            font-weight: 500;
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-light);
             margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
         .service-row input {
-            padding: 10px;
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
             text-align: center;
+        }
+        
+        .service-row input:focus {
+            outline: none;
+            border-color: var(--brand-color);
+        }
+        
+        .service-row .svc-name {
+            text-align: left;
         }
         
         .remove-btn {
@@ -357,13 +375,46 @@
             flex: 1;
         }
         
+        /* Blocked times */
+        .blocked-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 12px;
+            background: var(--cream);
+            border-radius: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .blocked-row select {
+            flex: 1;
+            min-width: 100px;
+            padding: 10px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            background: var(--white);
+        }
+        
+        .blocked-row span {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
         @media (max-width: 500px) {
             .service-row {
                 grid-template-columns: 1fr;
             }
             
-            .service-row .remove-btn {
-                justify-self: end;
+            .blocked-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .blocked-row select {
+                width: 100%;
             }
         }
     </style>
@@ -388,18 +439,18 @@
                 
                 <div class="form-group">
                     <label>Business Name *</label>
-                    <input type="text" id="businessName" placeholder="e.g., Bob's Walks" value="Bob's Walks">
+                    <input type="text" id="businessName" placeholder="e.g., Bob's Walks">
                 </div>
                 
                 <div class="form-group">
                     <label>Slogan</label>
-                    <input type="text" id="slogan" placeholder="e.g., Your reliable dog walker in San Francisco" value="Your reliable dog walker in San Francisco">
+                    <input type="text" id="slogan" placeholder="e.g., Your reliable dog walker in San Francisco">
                     <p class="hint">Appears under your business name</p>
                 </div>
                 
                 <div class="form-group">
                     <label>Walker Name *</label>
-                    <input type="text" id="walkerName" placeholder="e.g., Bob" value="Bob">
+                    <input type="text" id="walkerName" placeholder="e.g., Bob">
                     <p class="hint">The name your clients will see</p>
                 </div>
                 
@@ -489,25 +540,24 @@
                 <p style="color: var(--text-light); margin-bottom: 20px;">Set your working hours. Clients can only book within these times.</p>
                 
                 <div class="form-group">
-                    <label>Start Time</label>
-                    <select id="startHour">
-                        <option value="6">6:00 AM</option>
-                        <option value="7" selected>7:00 AM</option>
-                        <option value="8">8:00 AM</option>
-                        <option value="9">9:00 AM</option>
-                        <option value="10">10:00 AM</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label>End Time</label>
-                    <select id="endHour">
-                        <option value="17">5:00 PM</option>
-                        <option value="18">6:00 PM</option>
-                        <option value="19" selected>7:00 PM</option>
-                        <option value="20">8:00 PM</option>
-                        <option value="21">9:00 PM</option>
-                    </select>
+                    <label>Working Hours (each day)</label>
+                    <div style="display: flex; gap: 12px; align-items: center;">
+                        <select id="startHour" style="flex:1;">
+                            <option value="6">6:00 AM</option>
+                            <option value="7" selected>7:00 AM</option>
+                            <option value="8">8:00 AM</option>
+                            <option value="9">9:00 AM</option>
+                            <option value="10">10:00 AM</option>
+                        </select>
+                        <span style="color: var(--text-light);">to</span>
+                        <select id="endHour" style="flex:1;">
+                            <option value="17">5:00 PM</option>
+                            <option value="18">6:00 PM</option>
+                            <option value="19" selected>7:00 PM</option>
+                            <option value="20">8:00 PM</option>
+                            <option value="21">9:00 PM</option>
+                        </select>
+                    </div>
                 </div>
                 
                 <div class="form-group">
@@ -525,6 +575,58 @@
                         <option value="14">2 weeks</option>
                         <option value="30">1 month</option>
                     </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>🔒 Block Specific Times (optional)</label>
+                    <p class="hint" style="margin-bottom: 12px;">Have a second job? Set your unavailable time blocks here.</p>
+                    
+                    <div id="blockedTimes">
+                        <div class="blocked-row">
+                            <select class="block-day">
+                                <option value="mon">Monday</option>
+                                <option value="tue">Tuesday</option>
+                                <option value="wed">Wednesday</option>
+                                <option value="thu">Thursday</option>
+                                <option value="fri">Friday</option>
+                                <option value="sat">Saturday</option>
+                                <option value="sun">Sunday</option>
+                            </select>
+                            <select class="block-start">
+                                <option value="6">6:00 AM</option>
+                                <option value="7">7:00 AM</option>
+                                <option value="8">8:00 AM</option>
+                                <option value="9">9:00 AM</option>
+                                <option value="10">10:00 AM</option>
+                                <option value="11">11:00 AM</option>
+                                <option value="12">12:00 PM</option>
+                                <option value="13">1:00 PM</option>
+                                <option value="14">2:00 PM</option>
+                                <option value="15">3:00 PM</option>
+                                <option value="16">4:00 PM</option>
+                                <option value="17">5:00 PM</option>
+                                <option value="18">6:00 PM</option>
+                                <option value="19">7:00 PM</option>
+                            </select>
+                            <span>to</span>
+                            <select class="block-end">
+                                <option value="9">9:00 AM</option>
+                                <option value="10">10:00 AM</option>
+                                <option value="11">11:00 AM</option>
+                                <option value="12">12:00 PM</option>
+                                <option value="13">1:00 PM</option>
+                                <option value="14" selected>2:00 PM</option>
+                                <option value="15">3:00 PM</option>
+                                <option value="16">4:00 PM</option>
+                                <option value="17">5:00 PM</option>
+                                <option value="18">6:00 PM</option>
+                                <option value="19">7:00 PM</option>
+                                <option value="20">8:00 PM</option>
+                            </select>
+                            <button class="remove-btn" onclick="removeBlocked(this)">×</button>
+                        </div>
+                    </div>
+                    <button class="add-btn" onclick="addBlocked()">+ Add Blocked Time</button>
                 </div>
             </div>
             
@@ -646,6 +748,60 @@
             }
         }
         
+        // Blocked times
+        function addBlocked() {
+            const div = document.createElement('div');
+            div.className = 'blocked-row';
+            div.innerHTML = `
+                <select class="block-day">
+                    <option value="mon">Monday</option>
+                    <option value="tue">Tuesday</option>
+                    <option value="wed">Wednesday</option>
+                    <option value="thu">Thursday</option>
+                    <option value="fri">Friday</option>
+                    <option value="sat">Saturday</option>
+                    <option value="sun">Sunday</option>
+                </select>
+                <select class="block-start">
+                    <option value="6">6:00 AM</option>
+                    <option value="7">7:00 AM</option>
+                    <option value="8">8:00 AM</option>
+                    <option value="9">9:00 AM</option>
+                    <option value="10">10:00 AM</option>
+                    <option value="11">11:00 AM</option>
+                    <option value="12">12:00 PM</option>
+                    <option value="13">1:00 PM</option>
+                    <option value="14">2:00 PM</option>
+                    <option value="15">3:00 PM</option>
+                    <option value="16">4:00 PM</option>
+                    <option value="17">5:00 PM</option>
+                    <option value="18">6:00 PM</option>
+                    <option value="19">7:00 PM</option>
+                </select>
+                <span>to</span>
+                <select class="block-end">
+                    <option value="9">9:00 AM</option>
+                    <option value="10">10:00 AM</option>
+                    <option value="11">11:00 AM</option>
+                    <option value="12">12:00 PM</option>
+                    <option value="13">1:00 PM</option>
+                    <option value="14">2:00 PM</option>
+                    <option value="15" selected>3:00 PM</option>
+                    <option value="16">4:00 PM</option>
+                    <option value="17">5:00 PM</option>
+                    <option value="18">6:00 PM</option>
+                    <option value="19">7:00 PM</option>
+                    <option value="20">8:00 PM</option>
+                </select>
+                <button class="remove-btn" onclick="removeBlocked(this)">×</button>
+            `;
+            document.getElementById('blockedTimes').appendChild(div);
+        }
+        
+        function removeBlocked(btn) {
+            btn.parentElement.remove();
+        }
+        
         // Payment toggle
         function togglePaymentField(checkbox) {
             const row = checkbox.parentElement;
@@ -673,6 +829,16 @@
                 s.id = s.name.toLowerCase().replace(/\s+/g, '') + i;
             });
             
+            // Get blocked times
+            const blockedTimes = [];
+            document.querySelectorAll('.blocked-row').forEach(row => {
+                blockedTimes.push({
+                    day: row.querySelector('.block-day').value,
+                    start: parseInt(row.querySelector('.block-start').value),
+                    end: parseInt(row.querySelector('.block-end').value)
+                });
+            });
+            
             return {
                 businessName: document.getElementById('businessName').value || "Book My Walks",
                 slogan: document.getElementById('slogan').value || "Your reliable dog walker",
@@ -685,6 +851,7 @@
                 },
                 buffer: parseInt(document.getElementById('bufferTime').value) || 30,
                 advanceBooking: parseInt(document.getElementById('advanceBooking').value) || 7,
+                blockedTimes: blockedTimes,
                 payment: {
                     venmo: document.getElementById('venmoEnable').checked ? document.getElementById('venmoHandle').value : null,
                     zelle: document.getElementById('zelleEnable').checked ? document.getElementById('zelleInfo').value : null,
