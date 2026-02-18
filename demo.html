@@ -485,7 +485,7 @@
     <div class="container">
         <header>
             <div class="logo">Book My Walks</div>
-            <p class="tagline">Your reliable Dog Walker in San Francisco</p>
+            <p class="tagline" data-config="slogan">Your reliable dog walker booking plugin</p>
         </header>
         
         <div class="tab-switcher">
@@ -532,7 +532,7 @@
             <!-- Step 2: Date & Time -->
             <div id="step2" class="form-step hidden">
                 <div class="card">
-                    <div class="card-title">📅 When should George come by?</div>
+                    <div class="card-title">📅 When should <span data-walker>George</span> come by?</div>
                     <div class="form-group">
                         <label>Date</label>
                         <input type="date" id="bookingDate" required>
@@ -552,7 +552,7 @@
             <!-- Step 3: You & Your Dog -->
             <div id="step3" class="form-step hidden">
                 <div class="card">
-                    <div class="card-title">🐶 Tell George about yourself & your pup</div>
+                    <div class="card-title">🐶 Tell <span data-walker>George</span> about yourself & your pup</div>
                     <div class="form-group">
                         <label>Your Name *</label>
                         <input type="text" id="ownerName" required placeholder="Your name">
@@ -610,24 +610,11 @@
             <!-- Step 4: Payment -->
             <div id="step4" class="form-step hidden">
                 <div class="card">
-                    <div class="card-title">💳 How will you pay George?</div>
-                    <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 16px;">Pay directly to George when the walk is done. No upfront payment needed!</p>
+                    <div class="card-title">💳 How will you pay <span data-walker>George</span>?</div>
+                    <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 16px;">Pay directly to <span data-walker>George</span> when the walk is done. No upfront payment needed!</p>
                     <div class="payment-info">
                         <div class="payment-title">💰 Payment Options</div>
-                        <div class="payment-options">
-                            <div class="payment-option">
-                                <strong>Venmo:</strong> @georgexmeta
-                            </div>
-                            <div class="payment-option">
-                                <strong>Zelle:</strong> George Tinoco (415) 324-0599
-                            </div>
-                            <div class="payment-option">
-                                <strong>Apple Pay:</strong> (415) 324-0599
-                            </div>
-                            <div class="payment-option">
-                                <strong>Cash:</strong> In Person
-                            </div>
-                        </div>
+                        <div class="payment-options" id="paymentOptions"></div>
                     </div>
                 </div>
                 <div style="display: flex; gap: 10px;">
@@ -642,12 +629,12 @@
                     <div style="text-align: center; padding: 40px 20px;">
                         <div style="font-size: 4rem; margin-bottom: 16px;">🎉</div>
                         <div class="success-title">You're all set!</div>
-                        <p class="success-text" style="margin-top: 16px;">George will text you at <span id="confirmPhone"></span> to confirm your booking or chat about any timing changes. Can't wait to meet your pup! 🐕</p>
+                        <p class="success-text" style="margin-top: 16px;"><span data-walker>George</span> will text you at <span id="confirmPhone"></span> to confirm your booking or chat about any timing changes. Can't wait to meet your pup! 🐕</p>
                         
                         <!-- Demo CTA - only show in demo mode -->
                         <div id="demoCTA" style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border);">
                             <p style="font-weight: 600; margin-bottom: 16px;">Like what you see?</p>
-                            <a href="https://bookmywalks.com" class="submit-btn" style="display: block; text-decoration: none;">Build for Your Business →</a>
+                            <a href="build.html" class="submit-btn" style="display: block; text-decoration: none;">Build for Your Business →</a>
                         </div>
                         
                         <button class="submit-btn" style="margin-top: 24px; background: transparent; border-color: var(--border); color: var(--text);" onclick="resetForm()">Book Another Walk</button>
@@ -686,18 +673,86 @@
         // Storage key
         const STORAGE_KEY = 'bmw_bookings';
         
-        // Service prices
-        const servicePrices = {
-            '30min': '$25',
-            '60min': '$40',
-            'boarding': '$65'
+        // Business Configuration - Loaded from localStorage or defaults
+        const defaultConfig = {
+            businessName: 'Book My Walks',
+            slogan: 'Your reliable dog walker booking plugin',
+            walkerName: 'George',
+            services: [
+                { id: '30min', name: '30-Minute Walk', price: '$25', duration: 30 },
+                { id: '60min', name: '1-Hour Walk', price: '$40', duration: 60 },
+                { id: '2hr', name: '2-Hour Adventure', price: '$75', duration: 120 }
+            ],
+            payment: {
+                venmo: '@georgexmeta',
+                zelle: 'George Tinoco (415) 324-0599',
+                applePay: '(415) 324-0599',
+                cash: true
+            },
+            hours: { start: 7, end: 19 }
         };
         
-        const serviceNames = {
-            '30min': '30-Minute Walk',
-            '60min': '1-Hour Walk',
-            'boarding': 'Boarding (per day)'
-        };
+        // Load config from localStorage or use defaults
+        let config = { ...defaultConfig };
+        const savedConfig = localStorage.getItem('bmw_config');
+        if (savedConfig) {
+            config = { ...defaultConfig, ...JSON.parse(savedConfig) };
+        }
+        
+        // Apply config to page
+        function applyConfig() {
+            // Logo and slogan
+            document.querySelector('.logo').textContent = config.businessName;
+            document.querySelector('.tagline').textContent = config.slogan;
+            
+            // Update dynamic text
+            document.querySelectorAll('[data-walker]').forEach(el => {
+                el.textContent = el.textContent.replace(/George/g, config.walkerName);
+            });
+            
+            // Services
+            renderServices();
+            
+            // Payment info
+            renderPayment();
+        }
+        
+        function renderServices() {
+            const container = document.querySelector('.service-options');
+            container.innerHTML = config.services.map((svc, i) => `
+                <label class="service-option ${i === 0 ? 'selected' : ''}" onclick="selectService(this)">
+                    <input type="radio" name="service" value="${svc.id}" ${i === 0 ? 'checked' : ''}>
+                    <span class="service-radio"></span>
+                    <div class="service-info">
+                        <div class="service-name">${svc.name}</div>
+                        <div class="service-price">${svc.price}</div>
+                    </div>
+                </label>
+            `).join('');
+        }
+        
+        function renderPayment() {
+            const container = document.getElementById('paymentOptions');
+            if (!container) return;
+            
+            let html = '';
+            if (config.payment.venmo) html += `<div class="payment-option"><strong>Venmo:</strong> ${config.payment.venmo}</div>`;
+            if (config.payment.zelle) html += `<div class="payment-option"><strong>Zelle:</strong> ${config.payment.zelle}</div>`;
+            if (config.payment.applePay) html += `<div class="payment-option"><strong>Apple Pay:</strong> ${config.payment.applePay}</div>`;
+            if (config.payment.cash) html += `<div class="payment-option"><strong>Cash:</strong> In Person</div>`;
+            container.innerHTML = html;
+        }
+        
+        // Apply config on load
+        document.addEventListener('DOMContentLoaded', applyConfig);
+        
+        // Service prices (computed from config)
+        const servicePrices = {};
+        const serviceNames = {};
+        config.services.forEach(svc => {
+            servicePrices[svc.id] = svc.price;
+            serviceNames[svc.id] = svc.name;
+        });
         
         // Tab switching
         function switchTab(tab) {
@@ -804,7 +859,7 @@
         
         // Get service duration in minutes
         function getServiceDuration(serviceValue) {
-            const durations = { '30min': 30, '60min': 60, 'boarding': 0 };
+            const durations = { '30min': 30, '60min': 60, '2hr': 120 };
             return durations[serviceValue] || 60;
         }
         
