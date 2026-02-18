@@ -3,29 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Book My Walks - Your Reliable Dog Walker in San Francisco</title>
+    <title>Book My Walks - Dog Walking Booking Plugin</title>
     <meta name="theme-color" content="#000000">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="description" content="A beautiful booking plugin for dog walkers. Simple setup, easy for your clients to book.">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            /* Brand Config - Override these in your site */
             --brand-color: #000000;
-            
-            --primary: var(--brand-color);
-            --primary-dark: #333333;
-            --cream: #FFFFFF;
+            --cream: #FAFAFA;
             --white: #FFFFFF;
             --text: #1A1A1A;
             --text-light: #666666;
-            --success: #27AE60;
-            --warning: #F39C12;
-            --border: #CCCCCC;
-            --shadow: 0 4px 20px rgba(0,0,0,0.1);
+            --border: #E0E0E0;
         }
         
         * {
@@ -38,1016 +31,350 @@
             font-family: 'Outfit', sans-serif;
             background: var(--cream);
             color: var(--text);
-            min-height: 100vh;
-            line-height: 1.5;
+            line-height: 1.6;
         }
         
         .container {
-            max-width: 480px;
+            max-width: 900px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 0 24px;
         }
         
         /* Header */
         header {
-            text-align: center;
-            padding: 30px 0;
-        }
-        
-        .logo {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--brand-color);
-            letter-spacing: -1px;
-        }
-        
-        .logo span {
-            color: var(--text);
-        }
-        
-        .tagline {
-            color: var(--text-light);
-            font-size: 0.95rem;
-            margin-top: 4px;
-        }
-        
-        /* Tab Switcher */
-        .tab-switcher {
-            display: flex;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border);
             background: var(--white);
-            border-radius: 12px;
-            padding: 4px;
-            margin-bottom: 24px;
-            box-shadow: var(--shadow);
         }
         
-        .tab-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            background: transparent;
-            font-family: inherit;
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: var(--text-light);
-            cursor: pointer;
-            border-radius: 10px;
-            transition: all 0.3s;
-        }
-        
-        .tab-btn.active {
-            background: var(--brand-color);
-            color: #FFFFFF;
-        }
-        
-        /* Views */
-        .view {
-            display: none;
-        }
-        
-        .view.active {
-            display: block;
-        }
-        
-        /* Form Styles */
-        .card {
-            background: var(--white);
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow);
-        }
-        
-        .card-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 16px;
-            color: var(--text);
-        }
-        
-        .form-group {
-            margin-bottom: 16px;
-        }
-        
-        .form-group label {
-            display: block;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--text-light);
-            margin-bottom: 6px;
-        }
-        
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid var(--border);
-            border-radius: 10px;
-            font-family: inherit;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
-        
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-        
-        .form-group textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-        
-        /* Service Options */
-        .service-options {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        
-        .service-option {
-            display: flex;
-            align-items: center;
-            padding: 14px 16px;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .service-option:hover {
-            border-color: var(--primary);
-        }
-        
-        .service-option.selected {
-            border-color: var(--brand-color);
-            background: rgba(0, 0, 0, 0.05);
-        }
-        
-        .service-option input {
-            display: none;
-        }
-        
-        .service-radio {
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--border);
-            border-radius: 50%;
-            margin-right: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .service-option.selected .service-radio {
-            border-color: var(--brand-color);
-        }
-        
-        .service-option.selected .service-radio::after {
-            content: '';
-            width: 10px;
-            height: 10px;
-            background: var(--brand-color);
-            border-radius: 50%;
-        }
-        
-        .service-info {
-            flex: 1;
-        }
-        
-        .service-name {
-            font-weight: 600;
-            font-size: 1rem;
-        }
-        
-        .service-price {
-            font-size: 0.85rem;
-            color: var(--text-light);
-        }
-        
-        /* Time Slots */
-        .time-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-        }
-        
-        .time-slot {
-            padding: 10px;
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            text-align: center;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .time-slot:hover:not(.unavailable) {
-            border-color: var(--brand-color);
-        }
-        
-        .time-slot.selected {
-            background: var(--brand-color);
-            border-color: var(--brand-color);
-            color: #FFFFFF;
-            font-weight: 700;
-        }
-        
-        .time-slot.unavailable {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-        
-        /* Submit Button */
-        .submit-btn {
-            width: 100%;
-            padding: 16px;
-            background: var(--brand-color);
-            color: #FFFFFF;
-            border: 2px solid var(--brand-color);
-            border-radius: 12px;
-            font-family: inherit;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: opacity 0.3s;
-        }
-        
-        .submit-btn:hover {
-            opacity: 0.8;
-        }
-        
-        /* Payment Info */
-        .payment-info {
-            background: var(--cream);
-            border-radius: 12px;
-            padding: 16px;
-            margin-top: 16px;
-        }
-        
-        .payment-title {
-            font-weight: 600;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .payment-options {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        
-        .payment-option {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.9rem;
-        }
-        
-        .payment-option strong {
-            min-width: 60px;
-        }
-        
-        /* Success */
-        .success-card {
-            text-align: center;
-            padding: 40px 24px;
-        }
-        
-        .success-icon {
-            font-size: 4rem;
-            margin-bottom: 16px;
-        }
-        
-        .success-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: var(--success);
-        }
-        
-        .success-text {
-            color: var(--text-light);
-            margin-bottom: 24px;
-        }
-        
-        /* Dashboard */
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-        
-        .stat-card {
-            background: var(--white);
-            border-radius: 12px;
-            padding: 16px;
-            text-align: center;
-            box-shadow: var(--shadow);
-        }
-        
-        .stat-number {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--brand-color);
-        }
-        
-        .stat-label {
-            font-size: 0.75rem;
-            color: var(--text-light);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .booking-card {
-            background: var(--white);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 12px;
-            box-shadow: var(--shadow);
-        }
-        
-        .booking-header {
+        header .container {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
         }
         
-        .booking-service {
-            font-weight: 600;
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
             color: var(--brand-color);
+            text-decoration: none;
         }
         
-        .booking-status {
-            font-size: 0.75rem;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-weight: 600;
+        .logo span {
+            font-weight: 400;
         }
         
-        .booking-status.pending {
-            background: var(--warning);
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            margin-left: 24px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        .nav-links a:hover {
             color: var(--text);
         }
         
-        .booking-status.paid {
-            background: var(--success);
-            color: white;
-        }
-        
-        .booking-details {
-            font-size: 0.9rem;
-            color: var(--text-light);
-        }
-        
-        .booking-details div {
-            margin-bottom: 4px;
-        }
-        
-        .booking-dog-photo {
-            margin: 8px 0;
-            border-radius: 8px;
-            overflow: hidden;
-            max-width: 120px;
-        }
-        
-        .booking-dog-photo img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-        
-        .booking-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 12px;
-        }
-        
-        .booking-btn {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 8px;
-            font-family: inherit;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        
-        .booking-btn.mark-paid {
-            background: var(--success);
-            color: white;
-        }
-        
-        .booking-btn.cancel {
-            background: #FF5252;
-            color: white;
-        }
-        
-        .empty-state {
+        /* Hero */
+        .hero {
+            padding: 80px 0;
             text-align: center;
-            padding: 40px;
-            color: var(--text-light);
+            background: var(--white);
         }
         
-        .empty-icon {
-            font-size: 3rem;
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            color: var(--text);
+        }
+        
+        .hero h1 span {
+            color: var(--brand-color);
+        }
+        
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: var(--brand-color);
+            color: var(--white);
+            border: 2px solid var(--brand-color);
+        }
+        
+        .btn-primary:hover {
+            opacity: 0.8;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: var(--white);
+            color: var(--text);
+            border: 2px solid var(--border);
+        }
+        
+        .btn-secondary:hover {
+            border-color: var(--brand-color);
+            color: var(--brand-color);
+        }
+        
+        /* Features */
+        .features {
+            padding: 80px 0;
+        }
+        
+        .features h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 48px;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 32px;
+        }
+        
+        .feature-card {
+            background: var(--white);
+            padding: 32px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.25rem;
             margin-bottom: 12px;
         }
         
-        /* Hidden */
-        .hidden {
-            display: none !important;
+        .feature-card p {
+            color: var(--text-light);
+            font-size: 0.95rem;
         }
         
-        .photo-preview {
-            margin-top: 12px;
-            border-radius: 12px;
-            overflow: hidden;
-            max-width: 200px;
+        /* How it works */
+        .how-it-works {
+            padding: 80px 0;
+            background: var(--white);
         }
         
-        .photo-preview img {
-            width: 100%;
-            height: auto;
-            display: block;
+        .how-it-works h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 48px;
+        }
+        
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+        }
+        
+        @media (max-width: 768px) {
+            .steps {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .step {
+            text-align: center;
+        }
+        
+        .step-number {
+            width: 48px;
+            height: 48px;
+            background: var(--brand-color);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+            margin: 0 auto 16px;
+        }
+        
+        .step h3 {
+            margin-bottom: 8px;
+        }
+        
+        .step p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+        
+        /* CTA */
+        .cta {
+            padding: 80px 0;
+            text-align: center;
+        }
+        
+        .cta h2 {
+            font-size: 2rem;
+            margin-bottom: 16px;
+        }
+        
+        .cta p {
+            color: var(--text-light);
+            margin-bottom: 32px;
+        }
+        
+        /* Footer */
+        footer {
+            padding: 40px 0;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        /* Mobile */
+        @media (max-width: 600px) {
+            .hero h1 {
+                font-size: 2.25rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .nav-links {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="logo">Book My Walks</div>
-            <p class="tagline">Your reliable Dog Walker in San Francisco</p>
-        </header>
-        
-        <div class="tab-switcher">
-            <button class="tab-btn active" onclick="switchTab('book')">Book a Walk</button>
-            <button class="tab-btn" onclick="switchTab('dashboard')">Walker Dashboard</button>
+    <header>
+        <div class="container">
+            <a href="index.html" class="logo">Book My <span>Walks</span></a>
+            <nav class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="demo.html">Demo</a>
+            </nav>
         </div>
-        
-        <!-- Booking View -->
-        <div id="bookView" class="view active">
-            <!-- Step 1: Service -->
-            <div id="step1" class="form-step">
-                <div class="card">
-                    <div class="card-title">🐕 What does your pup need?</div>
-                    <div class="service-options">
-                        <label class="service-option selected" onclick="selectService(this)">
-                            <input type="radio" name="service" value="30min" checked>
-                            <span class="service-radio"></span>
-                            <div class="service-info">
-                                <div class="service-name">30-Minute Walk</div>
-                                <div class="service-price">$20</div>
-                            </div>
-                        </label>
-                        <label class="service-option" onclick="selectService(this)">
-                            <input type="radio" name="service" value="60min">
-                            <span class="service-radio"></span>
-                            <div class="service-info">
-                                <div class="service-name">1-Hour Walk</div>
-                                <div class="service-price">$35</div>
-                            </div>
-                        </label>
-                        <label class="service-option" onclick="selectService(this)">
-                            <input type="radio" name="service" value="boarding">
-                            <span class="service-radio"></span>
-                            <div class="service-info">
-                                <div class="service-name">2-Hour Adventure</div>
-                                <div class="service-price">$75</div>
-                            </div>
-                        </label>
-                    </div>
-                </div>
-                <button type="button" class="submit-btn" onclick="nextStep(2)">Next: Pick a Time ➡️</button>
-            </div>
-            
-            <!-- Step 2: Date & Time -->
-            <div id="step2" class="form-step hidden">
-                <div class="card">
-                    <div class="card-title">📅 When should George come by?</div>
-                    <div class="form-group">
-                        <label>Date</label>
-                        <input type="date" id="bookingDate" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Preferred Time</label>
-                        <div class="time-grid" id="timeSlots"></div>
-                        <input type="hidden" id="selectedTime" required>
-                    </div>
-                </div>
-                <div style="display: flex; gap: 10px;">
-                    <button type="button" class="submit-btn" style="flex: 1; background: #666;" onclick="nextStep(1)">⬅️ Back</button>
-                    <button type="button" class="submit-btn" style="flex: 1;" onclick="nextStep(3)">Next: You & Your Pup ➡️</button>
-                </div>
-            </div>
-            
-            <!-- Step 3: You & Your Dog -->
-            <div id="step3" class="form-step hidden">
-                <div class="card">
-                    <div class="card-title">🐶 Tell George about yourself & your pup</div>
-                    <div class="form-group">
-                        <label>Your Name *</label>
-                        <input type="text" id="ownerName" required placeholder="Your name">
-                    </div>
-                    <div class="form-group">
-                        <label>Phone *</label>
-                        <input type="tel" id="ownerPhone" required placeholder="(415) 123-4567">
-                    </div>
-                    <div class="form-group">
-                        <label>Email *</label>
-                        <input type="email" id="ownerEmail" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Address for Pickup *</label>
-                        <textarea id="pickupAddress" required placeholder="Full address for dog pickup"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Emergency Contact</label>
-                        <input type="text" id="emergencyContact" placeholder="Name & phone">
-                    </div>
-                    <hr style="border: none; border-top: 1px solid var(--border); margin: 20px 0;">
-                    <div class="form-group">
-                        <label>Dog Photo</label>
-                        <input type="file" id="dogPhoto" accept="image/*" capture="environment" onchange="previewDogPhoto(event)">
-                        <div id="dogPhotoPreview" class="photo-preview hidden"></div>
-                    </div>
-                    <div class="form-group">
-                        <label>Dog's Name *</label>
-                        <input type="text" id="dogName" required placeholder="e.g., Max">
-                    </div>
-                    <div class="form-group">
-                        <label>Breed</label>
-                        <input type="text" id="dogBreed" placeholder="e.g., Golden Retriever">
-                    </div>
-                    <div class="form-group">
-                        <label>Size</label>
-                        <select id="dogSize">
-                            <option value="">Select size...</option>
-                            <option value="small">Small (under 20 lbs)</option>
-                            <option value="medium">Medium (20-50 lbs)</option>
-                            <option value="large">Large (50+ lbs)</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Special Notes (behavior, medical, etc.)</label>
-                        <textarea id="dogNotes" placeholder="Any behavioral issues, medical conditions, or special needs?"></textarea>
-                    </div>
-                </div>
-                <div style="display: flex; gap: 10px;">
-                    <button type="button" class="submit-btn" style="flex: 1; background: #666;" onclick="nextStep(2)">⬅️ Back</button>
-                    <button type="button" class="submit-btn" style="flex: 1;" onclick="nextStep(4)">Next: Payment ➡️</button>
-                </div>
-            </div>
-            
-            <!-- Step 4: Payment -->
-            <div id="step4" class="form-step hidden">
-                <div class="card">
-                    <div class="card-title">💳 How will you pay George?</div>
-                    <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 16px;">Pay directly to George when the walk is done. No upfront payment needed!</p>
-                    <div class="payment-info">
-                        <div class="payment-title">💰 Payment Options</div>
-                        <div class="payment-options">
-                            <div class="payment-option">
-                                <strong>Venmo:</strong> @georgexmeta
-                            </div>
-                            <div class="payment-option">
-                                <strong>Zelle:</strong> George Tinoco (415) 324-0599
-                            </div>
-                            <div class="payment-option">
-                                <strong>Apple Pay:</strong> (415) 324-0599
-                            </div>
-                            <div class="payment-option">
-                                <strong>Cash:</strong> In Person
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div style="display: flex; gap: 10px;">
-                    <button type="button" class="submit-btn" style="flex: 1; background: #666;" onclick="nextStep(3)">⬅️ Back</button>
-                    <button type="button" class="submit-btn" style="flex: 1;" onclick="submitBooking()">📨 Request Booking</button>
-                </div>
-            </div>
-            
-            <!-- Success -->
-            <div id="successView" class="hidden">
-                <div class="card">
-                    <div style="text-align: center; padding: 40px 20px;">
-                        <div style="font-size: 4rem; margin-bottom: 16px;">🎉</div>
-                        <div class="success-title">You're all set!</div>
-                        <p class="success-text" style="margin-top: 16px;">George will text you at <span id="confirmPhone"></span> to confirm your booking or chat about any timing changes. Can't wait to meet your pup! 🐕</p>
-                        <button class="submit-btn" style="margin-top: 24px;" onclick="resetForm()">Book Another Walk</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Dashboard View -->
-        <div id="dashboardView" class="view">
-            <div class="stats-row">
-                <div class="stat-card">
-                    <div class="stat-number" id="totalBookings">0</div>
-                    <div class="stat-label">Total</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="pendingBookings">0</div>
-                    <div class="stat-label">Pending</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="paidBookings">0</div>
-                    <div class="stat-label">Paid</div>
-                </div>
-            </div>
-            
-            <div class="card">
-                <div class="card-title">📋 Upcoming Bookings</div>
-                <div id="bookingsList"></div>
-            </div>
-            
-            <button class="submit-btn" onclick="clearAllBookings()" style="background: #FF5252; margin-top: 20px;">Clear All Bookings</button>
-        </div>
-    </div>
+    </header>
     
-    <script>
-        // Storage key
-        const STORAGE_KEY = 'bmw_bookings';
-        
-        // Service prices
-        const servicePrices = {
-            '30min': '$25',
-            '60min': '$40',
-            'boarding': '$65'
-        };
-        
-        const serviceNames = {
-            '30min': '30-Minute Walk',
-            '60min': '1-Hour Walk',
-            'boarding': 'Boarding (per day)'
-        };
-        
-        // Tab switching
-        function switchTab(tab) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
-            
-            if (tab === 'book') {
-                document.querySelectorAll('.tab-btn')[0].classList.add('active');
-                document.getElementById('bookView').classList.add('active');
-            } else {
-                document.querySelectorAll('.tab-btn')[1].classList.add('active');
-                document.getElementById('dashboardView').classList.add('active');
-                loadDashboard();
-            }
-        }
-        // Step navigation
-        function nextStep(step) {
-            // Going backwards - just show the step, no validation
-            if (step < 1 || step < (getCurrentStep())) {
-                showStep(step);
-                return;
-            }
-            
-            const currentStep = step - 1;
-            
-            // Step 2 validation - date & time
-            if (currentStep === 2) {
-                const dateVal = document.getElementById('bookingDate').value;
-                const timeVal = document.getElementById('selectedTime').value;
-                
-                if (!dateVal) {
-                    alert('Please pick a date!');
-                    return;
-                }
-                if (!timeVal) {
-                    alert('Please pick a time!');
-                    return;
-                }
-            } else {
-                // Standard validation - check all required fields in current step
-                const stepEl = document.getElementById('step' + currentStep);
-                const requiredInputs = stepEl.querySelectorAll('[required]');
-                let valid = true;
-                
-                requiredInputs.forEach(input => {
-                    if (!input.value) {
-                        valid = false;
-                        input.style.border = '2px solid #FF5252';
-                    } else {
-                        input.style.border = '';
-                    }
-                });
-                
-                if (!valid) {
-                    alert('Please fill in all required fields!');
-                    return;
-                }
-            }
-            
-            showStep(step);
-        }
-        
-        function getCurrentStep() {
-            for (let i = 1; i <= 4; i++) {
-                if (!document.getElementById('step' + i).classList.contains('hidden')) {
-                    return i;
-                }
-            }
-            return 1;
-        }
-        
-        function showStep(step) {
-            // Hide all steps
-            document.querySelectorAll('.form-step').forEach(el => el.classList.add('hidden'));
-            // Show target step
-            document.getElementById('step' + step).classList.remove('hidden');
-        }
-        
-        // Service selection
-        function selectService(el) {
-            document.querySelectorAll('.service-option').forEach(opt => opt.classList.remove('selected'));
-            el.classList.add('selected');
-            el.querySelector('input').checked = true;
-            generateTimeSlots(); // Regenerate slots based on new service duration
-        }
-        
-        // Dog photo preview
-        function previewDogPhoto(event) {
-            const file = event.target.files[0];
-            const preview = document.getElementById('dogPhotoPreview');
-            
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    preview.innerHTML = '<img src="' + e.target.result + '" alt="Dog photo">';
-                    preview.classList.remove('hidden');
-                };
-                reader.readAsDataURL(file);
-            } else {
-                preview.classList.add('hidden');
-                preview.innerHTML = '';
-            }
-        }
-        
-        // Get service duration in minutes
-        function getServiceDuration(serviceValue) {
-            const durations = { '30min': 30, '60min': 60, 'boarding': 0 };
-            return durations[serviceValue] || 60;
-        }
-        
-        // Convert time string to minutes since midnight
-        function timeToMinutes(timeStr) {
-            const match = timeStr.match(/(\d+):(\d+)\s*(AM|PM)/i);
-            if (!match) return 0;
-            
-            let hours = parseInt(match[1]);
-            const minutes = parseInt(match[2]);
-            const period = match[3].toUpperCase();
-            
-            if (period === 'PM' && hours !== 12) hours += 12;
-            if (period === 'AM' && hours === 12) hours = 0;
-            
-            return hours * 60 + minutes;
-        }
-        
-        // Convert minutes to time string
-        function minutesToTime(minutes) {
-            const hours = Math.floor(minutes / 60);
-            const mins = minutes % 60;
-            const period = hours >= 12 ? 'PM' : 'AM';
-            const displayHours = hours === 0 ? 12 : (hours > 12 ? hours - 12 : hours);
-            return displayHours + ':' + mins.toString().padStart(2, '0') + ' ' + period;
-        }
-        
-        // Get booked times for a date
-        function getBookedTimes(date) {
-            const bookings = getBookings();
-            return bookings
-                .filter(b => b.date === date && b.status !== 'cancelled')
-                .map(b => ({
-                    time: b.time,
-                    duration: getServiceDuration(b.service)
-                }));
-        }
-        
-        // Generate time slots - only show selectable times
-        function generateTimeSlots() {
-            const date = document.getElementById('bookingDate').value;
-            const container = document.getElementById('timeSlots');
-            const bookedTimes = date ? getBookedTimes(date) : [];
-            
-            // Block times: booked slots + 30 min buffer after each
-            const blockedTimes = new Set();
-            bookedTimes.forEach(booking => {
-                const startMins = timeToMinutes(booking.time);
-                const duration = getServiceDuration(booking.service) || 60;
-                const endMins = startMins + duration + 30; // +30 for buffer
-                
-                // Block from start to end (rounded to 30-min intervals)
-                let current = startMins;
-                while (current < endMins) {
-                    blockedTimes.add(current);
-                    current += 30;
-                }
-            });
-            
-            // Generate slots: just :00 slots, but skip if blocked
-            const slots = [];
-            for (let mins = 7 * 60; mins <= 19 * 60; mins += 60) {
-                // Only add the hour slot if it's not blocked
-                if (!blockedTimes.has(mins)) {
-                    slots.push({ mins, type: 'hour' });
-                }
-            }
-            
-            // Generate HTML
-            container.innerHTML = slots.length > 0 ? slots.map(slot => {
-                const timeStr = minutesToTime(slot.mins);
-                const onclick = `onclick="selectTime(this, '${timeStr}')"`;
-                return `<div class="time-slot" ${onclick}>${timeStr}</div>`;
-            }).join('') : '<p style="text-align:center;color:var(--text-light);grid-column:1/-1;">No available times for this date</p>';
-            
-            // Reset selection
-            window.selectedTime = null;
-            document.getElementById('selectedTime').value = '';
-        }
-        
-        // Initialize - set min date and generate time slots
-        document.getElementById('bookingDate').min = new Date().toISOString().split('T')[0];
-        document.getElementById('bookingDate').addEventListener('change', generateTimeSlots);
-        generateTimeSlots();
-        
-        // Time selection
-        window.selectedTime = null;
-        function selectTime(el, time) {
-            if (el.classList.contains('unavailable')) return;
-            
-            document.querySelectorAll('.time-slot').forEach(slot => slot.classList.remove('selected'));
-            el.classList.add('selected');
-            window.selectedTime = time;
-            document.getElementById('selectedTime').value = time;
-            console.log('Time selected:', time, document.getElementById('selectedTime').value);
-        }
-        
-        // Set min date to today
-        document.getElementById('bookingDate').min = new Date().toISOString().split('T')[0];
-        
-        // Get bookings from storage
-        function getBookings() {
-            const data = localStorage.getItem(STORAGE_KEY);
-            return data ? JSON.parse(data) : [];
-        }
-        
-        // Save booking
-        function saveBooking(booking) {
-            const bookings = getBookings();
-            booking.id = Date.now();
-            booking.status = 'pending';
-            booking.createdAt = new Date().toISOString();
-            bookings.push(booking);
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(bookings));
-            return booking;
-        }
-        
-        // Submit booking
-        function submitBooking() {
-            const booking = {
-                service: document.querySelector('input[name="service"]:checked').value,
-                date: document.getElementById('bookingDate').value,
-                time: document.getElementById('selectedTime').value,
-                dog: {
-                    name: document.getElementById('dogName').value,
-                    breed: document.getElementById('dogBreed').value,
-                    size: document.getElementById('dogSize').value,
-                    notes: document.getElementById('dogNotes').value,
-                    photo: document.getElementById('dogPhotoPreview').innerHTML
-                },
-                owner: {
-                    name: document.getElementById('ownerName').value,
-                    phone: document.getElementById('ownerPhone').value,
-                    email: document.getElementById('ownerEmail').value,
-                    address: document.getElementById('pickupAddress').value,
-                    emergency: document.getElementById('emergencyContact').value
-                }
-            };
-            
-            saveBooking(booking);
-            
-            // Show success - hide all steps, show success
-            document.querySelectorAll('.form-step').forEach(el => el.classList.add('hidden'));
-            document.getElementById('confirmPhone').textContent = document.getElementById('ownerPhone').value;
-            document.getElementById('successView').classList.remove('hidden');
-            
-            // In production, this would send an email
-            console.log('Booking submitted:', booking);
-        }
-        
-        // Reset form
-        function resetForm() {
-            // Clear all form fields
-            document.querySelectorAll('#bookView input, #bookView textarea, #bookView select').forEach(el => {
-                el.value = '';
-            });
-            
-            // Clear photo preview
-            document.getElementById('dogPhotoPreview').innerHTML = '';
-            document.getElementById('dogPhotoPreview').classList.add('hidden');
-            
-            // Reset step visibility
-            document.getElementById('successView').classList.add('hidden');
-            for (let i = 1; i <= 4; i++) {
-                document.getElementById('step' + i).classList.add('hidden');
-            }
-            document.getElementById('step1').classList.remove('hidden');
-            
-            // Clear time selection
-            document.querySelectorAll('.time-slot').forEach(slot => slot.classList.remove('selected'));
-            window.selectedTime = null;
-            
-            // Regenerate time slots
-            generateTimeSlots();
-        }
-        
-        // Load dashboard
-        function loadDashboard() {
-            const bookings = getBookings();
-            
-            // Sort by date
-            bookings.sort((a, b) => new Date(a.date) - new Date(b.date));
-            
-            // Stats
-            document.getElementById('totalBookings').textContent = bookings.length;
-            document.getElementById('pendingBookings').textContent = bookings.filter(b => b.status === 'pending').length;
-            document.getElementById('paidBookings').textContent = bookings.filter(b => b.status === 'paid').length;
-            
-            // Bookings list
-            const list = document.getElementById('bookingsList');
-            
-            if (bookings.length === 0) {
-                list.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-icon">🐕</div>
-                        <p>No bookings yet</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            list.innerHTML = bookings.map(booking => `
-                <div class="booking-card">
-                    <div class="booking-header">
-                        <span class="booking-service">${serviceNames[booking.service]} - ${servicePrices[booking.service]}</span>
-                        <span class="booking-status ${booking.status}">${booking.status === 'pending' ? '⏳ Pending' : '✅ Paid'}</span>
-                    </div>
-                    <div class="booking-details">
-                        <div>📅 ${booking.date} at ${booking.time}</div>
-                        <div>🐕 ${booking.dog.name} ${booking.dog.breed ? `(${booking.dog.breed})` : ''}</div>
-                        ${booking.dog.photo ? `<div class="booking-dog-photo">${booking.dog.photo}</div>` : ''}
-                        <div>👤 ${booking.owner.name} - ${booking.owner.phone}</div>
-                        <div>📍 ${booking.owner.address}</div>
-                        ${booking.dog.notes ? `<div>📝 Notes: ${booking.dog.notes}</div>` : ''}
-                    </div>
-                    <div class="booking-actions">
-                        ${booking.status === 'pending' ? `<button class="booking-btn mark-paid" onclick="markPaid(${booking.id})">✅ Mark Paid</button>` : ''}
-                        <button class="booking-btn cancel" onclick="cancelBooking(${booking.id})">❌ Cancel</button>
-                    </div>
+    <section class="hero">
+        <div class="container">
+            <h1>Dog Walking Booking <span>Made Simple</span></h1>
+            <p>A beautiful, lightweight booking plugin that works on any website. Your clients book walks in minutes — no apps, no hassle.</p>
+            <div class="hero-buttons">
+                <a href="demo.html" class="btn btn-primary">Try the Demo →</a>
+                <a href="#build" class="btn btn-secondary">Build for Your Business</a>
+            </div>
+        </div>
+    </section>
+    
+    <section id="features" class="features">
+        <div class="container">
+            <h2>Why Dog Walkers Love It</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>5-Minute Setup</h3>
+                    <p>Just copy a few lines of code. Works with any website — WordPress, Squarespace, custom sites, all of it.</p>
                 </div>
-            `).join('');
-        }
-        
-        // Mark as paid
-        function markPaid(id) {
-            const bookings = getBookings();
-            const booking = bookings.find(b => b.id === id);
-            if (booking) {
-                booking.status = 'paid';
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(bookings));
-                loadDashboard();
-            }
-        }
-        
-        // Cancel booking
-        function cancelBooking(id) {
-            if (!confirm('Cancel this booking?')) return;
-            
-            let bookings = getBookings();
-            bookings = bookings.filter(b => b.id !== id);
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(bookings));
-            loadDashboard();
-        }
-        
-        // Clear all
-        function clearAllBookings() {
-            if (!confirm('Delete ALL bookings? This cannot be undone.')) return;
-            localStorage.removeItem(STORAGE_KEY);
-            loadDashboard();
-        }
-    </script>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Mobile-First Design</h3>
+                    <p>Your clients book from their phones effortlessly. Clean interface, big buttons, easy to use.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>No App Downloads</h3>
+                    <p>Everything happens in the browser. No accounts, no apps to install, no friction.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3>Your Brand, Your Colors</h3>
+                    <p>Customize colors, your name, your slogan. Looks like part of your existing website.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📅</div>
+                    <h3>Smart Time Blocking</h3>
+                    <p>Automatically blocks off times you've already booked. No double-booking headaches.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💳</div>
+                    <h3>Flexible Payments</h3>
+                    <p>Venmo, Zelle, Apple Pay, cash — you decide how clients pay. Collect on delivery.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="how-it-works" class="how-it-works">
+        <div class="container">
+            <h2>How It Works</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Customize</h3>
+                    <p>Pick your brand colors, set your services and prices, add your payment info.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Embed</h3>
+                    <p>Copy the code we generate and paste it into your website. That's it.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Get Bookings</h3>
+                    <p>Clients book walks, you get notified. Manage everything from your dashboard.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="build" class="cta">
+        <div class="container">
+            <h2>Ready to Get Started?</h2>
+            <p>Try the demo first, then build your custom booking page in minutes.</p>
+            <a href="demo.html" class="btn btn-primary">Try the Demo</a>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="container">
+            <p>© 2026 Book My Walks. Built for dog walkers, by dog walkers.</p>
+        </div>
+    </footer>
 </body>
 </html>
